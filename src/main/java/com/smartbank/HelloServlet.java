@@ -1,4 +1,4 @@
-package com.example.smartbank;
+package com.smartbank;
 
 import java.io.*;
 
