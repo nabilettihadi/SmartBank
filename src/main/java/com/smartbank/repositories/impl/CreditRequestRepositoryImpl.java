@@ -46,7 +46,7 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public boolean deleteById(Long id) {
         EntityManager em = EntityManagerFactoryUtil.getEntityManager();
         try {
             CreditRequest creditRequest = em.find(CreditRequest.class, id);
@@ -58,6 +58,7 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
         } finally {
             em.close();
         }
+        return false;
     }
 
     @Override

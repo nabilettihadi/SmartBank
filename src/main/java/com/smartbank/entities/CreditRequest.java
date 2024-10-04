@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table
@@ -13,9 +13,6 @@ public class CreditRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String clientName;
 
     @Column(nullable = false)
     private BigDecimal amount;
@@ -42,12 +39,10 @@ public class CreditRequest {
     private String cinNumber;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date hiringDate;
+    private LocalDate hiringDate;
 
     @Column(nullable = false)
     private BigDecimal totalRevenue;
@@ -62,14 +57,6 @@ public class CreditRequest {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
     }
 
     public BigDecimal getAmount() {
@@ -136,19 +123,19 @@ public class CreditRequest {
         this.cinNumber = cinNumber;
     }
 
-    public Date getBirthDate() {
+    public LocalDate  getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate  birthDate) {
         this.birthDate = birthDate;
     }
 
-    public Date getHiringDate() {
+    public LocalDate  getHiringDate() {
         return hiringDate;
     }
 
-    public void setHiringDate(Date hiringDate) {
+    public void setHiringDate(LocalDate  hiringDate) {
         this.hiringDate = hiringDate;
     }
 

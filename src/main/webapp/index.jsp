@@ -18,6 +18,7 @@
     <div class="step-content">
         <div id="step-1">
             <form id="loan-form" action="creditRequest" method="post">
+                <input type="hidden" name="step" value="step1" />
                 <label for="project">Mon projet</label>
                 <select id="project" name="project">
                     <option value="argent">J'ai besoin d'argent</option>
@@ -64,6 +65,7 @@
     <div class="step-content">
         <div id="step-2" style="display: none">
             <form id="contact-form" action="creditRequest" method="post">
+                <input type="hidden" name="step" value="step2" />
                 <label for="email">Email*</label>
                 <input type="email" id="email" name="email" required placeholder="Entrez votre email" />
 
@@ -80,6 +82,7 @@
     <div class="step-content">
         <div id="step-3" style="display: none">
             <form id="personal-info-form" action="creditRequest" method="post">
+                <input type="hidden" name="step" value="step3" />
                 <div class="form-group">
                     <label>Civilité*</label>
                     <div class="radio-group">

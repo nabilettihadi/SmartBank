@@ -12,7 +12,7 @@ public interface CreditRequestRepository {
 
     CreditRequest update(CreditRequest creditRequest);
 
-    void deleteById(Long id);
+    boolean deleteById(Long id);
 
     List<CreditRequest> findAll();
 
