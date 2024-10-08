@@ -59,6 +59,22 @@ public class CreditRequest {
     @Column(nullable = false)
     private boolean hasOngoingCredits;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CreditRequestStatus status;
+
+    @Column(nullable = false)
+    private LocalDate createdAt;
+
+    @Column(nullable = true)
+    private LocalDate updatedAt;
+
+    // Constructor
+    public CreditRequest() {
+        this.createdAt = LocalDate.now();
+    }
+
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -190,6 +206,26 @@ public class CreditRequest {
         this.hasOngoingCredits = hasOngoingCredits;
     }
 
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public CreditRequestStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CreditRequestStatus status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "CreditRequest{" +
@@ -209,6 +245,9 @@ public class CreditRequest {
                 ", hiringDate=" + hiringDate +
                 ", totalRevenue=" + totalRevenue +
                 ", hasOngoingCredits=" + hasOngoingCredits +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

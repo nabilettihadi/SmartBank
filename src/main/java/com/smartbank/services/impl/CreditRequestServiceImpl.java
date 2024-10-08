@@ -1,9 +1,11 @@
 package com.smartbank.services.impl;
 
 import com.smartbank.entities.CreditRequest;
+import com.smartbank.entities.CreditRequestStatus;
 import com.smartbank.repositories.CreditRequestRepository;
 import com.smartbank.services.CreditRequestService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class CreditRequestServiceImpl implements CreditRequestService {
@@ -39,4 +41,8 @@ public class CreditRequestServiceImpl implements CreditRequestService {
         return creditRequestRepository.findAll();
     }
 
+    @Override
+    public List<CreditRequest> getFilteredCreditRequests(CreditRequestStatus status, LocalDate startDate, LocalDate endDate) {
+        return creditRequestRepository.findFiltered(status, startDate, endDate);
+    }
 }

@@ -1,6 +1,7 @@
 package com.smartbank.web;
 
 import com.smartbank.entities.CreditRequest;
+import com.smartbank.entities.CreditRequestStatus;
 import com.smartbank.services.CreditRequestService;
 import com.smartbank.services.impl.CreditRequestServiceImpl;
 import com.smartbank.repositories.CreditRequestRepository;
@@ -33,7 +34,7 @@ public class CreditSimulationServlet extends HttpServlet {
 
         handleStep1(request);
         handleStep2(request);
-        handleStep3(request);
+        handleStep3(request,response);
     }
 
     private void handleStep1(HttpServletRequest request) {
@@ -60,7 +61,7 @@ public class CreditSimulationServlet extends HttpServlet {
         request.getSession().setAttribute("mobilePhone", mobilePhone);
     }
 
-    private void handleStep3(HttpServletRequest request) {
+    private void handleStep3(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         String civilite = request.getParameter("civilite");
         String firstName = request.getParameter("prenom");
@@ -88,7 +89,11 @@ public class CreditSimulationServlet extends HttpServlet {
         creditRequest.setHiringDate(hiringDate);
         creditRequest.setTotalRevenue(totalRevenue);
         creditRequest.setHasOngoingCredits(hasOngoingCredits);
+        creditRequest.setStatus(CreditRequestStatus.PENDING);
+        creditRequest.setUpdatedAt(LocalDate.now());
 
         creditRequestService.createCreditRequest(creditRequest);
+
+        response.sendRedirect(request.getContextPath() + "/creditRequests");
     }
 }

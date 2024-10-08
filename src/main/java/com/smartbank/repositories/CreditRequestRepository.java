@@ -1,7 +1,9 @@
 package com.smartbank.repositories;
 
 import com.smartbank.entities.CreditRequest;
+import com.smartbank.entities.CreditRequestStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CreditRequestRepository {
@@ -16,4 +18,5 @@ public interface CreditRequestRepository {
 
     List<CreditRequest> findAll();
 
+    List<CreditRequest> findFiltered(CreditRequestStatus status, LocalDate startDate, LocalDate endDate);
 }
