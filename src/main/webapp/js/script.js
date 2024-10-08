@@ -16,16 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function calculateMonthlyPayment(amount, duration) {
         const monthlyRate = interestRate / 12;
-        return Math.round(
-            (amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -duration))
-        );
+        return Math.round((amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -duration)));
     }
 
     function calculateLoanAmount(monthly, duration) {
         const monthlyRate = interestRate / 12;
-        return Math.round(
-            (monthly * (1 - Math.pow(1 + monthlyRate, -duration))) / monthlyRate
-        );
+        return Math.round((monthly * (1 - Math.pow(1 + monthlyRate, -duration))) / monthlyRate);
     }
 
     function updateMonthly() {
@@ -58,11 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         steps.forEach((step, index) => {
-            if (index + 1 === currentStep) {
-                step.classList.add("active");
-            } else {
-                step.classList.remove("active");
-            }
+            step.classList.toggle("active", index + 1 === currentStep);
         });
     }
 
@@ -83,16 +75,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     nextButtons.forEach((button, index) => {
         button.addEventListener("click", function () {
+            let validationFunction;
             if (index === 0) {
-                if (validateStep1()) {
-                    currentStep++;
-                    updateStep();
-                }
+                validationFunction = validateStep1;
             } else if (index === 1) {
-                if (validateStep2()) {
-                    currentStep++;
-                    updateStep();
-                }
+                validationFunction = validateStep2;
+            } else if (index === 2) {
+                validationFunction = validateStep3;
+            }
+            if (validationFunction && validationFunction()) {
+                currentStep++;
+                updateStep();
             }
         });
     });
@@ -100,25 +93,65 @@ document.addEventListener("DOMContentLoaded", function () {
     function validateStep1() {
         const project = document.getElementById("project").value;
         const profession = document.getElementById("profession").value;
+        const amount = parseInt(amountInput.value);
+        const duration = parseInt(durationInput.value);
 
-        if (!project || !profession) {
+        if (!project || !profession || !amount || !duration) {
             alert("Veuillez sélectionner tous les champs obligatoires.");
             return false;
         }
+
+        if (amount <= 0) {
+            alert("Le montant doit être supérieur à 0.");
+            return false;
+        }
+
+        if (duration < 12 || duration > 120) {
+            alert("La durée doit être comprise entre 12 et 120 mois.");
+            return false;
+        }
+
         return true;
     }
 
     function validateStep2() {
         const email = document.getElementById("email").value;
         const phone = document.getElementById("phone").value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const phoneRegex = /^\d{10}$/;
 
         if (!email || !phone) {
             alert("Veuillez remplir tous les champs obligatoires.");
             return false;
         }
+
+        if (!emailRegex.test(email)) {
+            alert("Veuillez entrer un email valide.");
+            return false;
+        }
+
+        if (!phoneRegex.test(phone)) {
+            alert("Veuillez entrer un numéro de téléphone valide.");
+            return false;
+        }
+        return true;
+    }
+
+    function validateStep3() {
+        const nom = document.getElementById("nom").value;
+        const prenom = document.getElementById("prenom").value;
+        const cin = document.getElementById("cin").value;
+        const dateNaissance = document.getElementById("date-naissance").value;
+        const dateEmbauche = document.getElementById("date-embauche").value;
+        const revenus = document.getElementById("revenus").value;
+
+        if (!nom || !prenom || !cin || !dateNaissance || !dateEmbauche || !revenus) {
+            alert("Veuillez remplir tous les champs obligatoires.");
+            return false;
+        }
+
         return true;
     }
 
     updateStep();
-    updateMonthly();
 });

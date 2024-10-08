@@ -16,27 +16,27 @@
         <div class="triangle"></div>
     </div>
     <div class="step-content">
+        <form id="loan-form" action="${pageContext.request.contextPath}/creditRequest" method="post">
         <div id="step-1">
-            <form id="loan-form" action="creditRequest" method="post">
                 <input type="hidden" name="step" value="step1" />
                 <label for="project">Mon projet</label>
                 <select id="project" name="project">
-                    <option value="argent">J'ai besoin d'argent</option>
-                    <option value="vehicule-occasion">Je finance mon véhicule d’occasion</option>
-                    <option value="imprevus">Je Gère mes imprévus</option>
-                    <option value="vehicule-neuf">Je finance mon véhicule neuf</option>
-                    <option value="maison">J’équipe ma maison</option>
+                    <option value="J'ai besoin d'argent">J'ai besoin d'argent</option>
+                    <option value="Je finance mon véhicule d’occasion">Je finance mon véhicule d’occasion</option>
+                    <option value="Je Gère mes imprévus">Je Gère mes imprévus</option>
+                    <option value="Je finance mon véhicule neuf">Je finance mon véhicule neuf</option>
+                    <option value="J’équipe ma maison">J’équipe ma maison</option>
                 </select>
 
                 <label for="profession">Je suis</label>
                 <select id="profession" name="profession">
-                    <option value="Salarie-prive">Salarié du secteur privé</option>
-                    <option value="fonctionnaire">Fonctionnaire</option>
-                    <option value="liberale">Profession libérale</option>
-                    <option value="commercant">Commerçant</option>
-                    <option value="artisan">Artisan</option>
-                    <option value="retraite">Retraité</option>
-                    <option value="autres">Autres professions</option>
+                    <option value="Salarié du secteur privé">Salarié du secteur privé</option>
+                    <option value="Fonctionnaire">Fonctionnaire</option>
+                    <option value="Profession libérale">Profession libérale</option>
+                    <option value="Commerçant">Commerçant</option>
+                    <option value="Artisan">Artisan</option>
+                    <option value="Retraité">Retraité</option>
+                    <option value="Autres professions">Autres professions</option>
                 </select>
 
                 <div class="input-group">
@@ -59,12 +59,9 @@
                     <b>Continuer</b> <br />
                     Sans engagement
                 </button>
-            </form>
         </div>
-    </div>
     <div class="step-content">
         <div id="step-2" style="display: none">
-            <form id="contact-form" action="creditRequest" method="post">
                 <input type="hidden" name="step" value="step2" />
                 <label for="email">Email*</label>
                 <input type="email" id="email" name="email" required placeholder="Entrez votre email" />
@@ -76,12 +73,10 @@
                     <b>Continuer</b> <br />
                     Sans engagement
                 </button>
-            </form>
         </div>
     </div>
     <div class="step-content">
         <div id="step-3" style="display: none">
-            <form id="personal-info-form" action="creditRequest" method="post">
                 <input type="hidden" name="step" value="step3" />
                 <div class="form-group">
                     <label>Civilité*</label>
@@ -138,14 +133,15 @@
                 </div>
 
                 <div class="button-group">
-                    <button type="submit" class="next-btn"><b>Demander ce Crédit</b></button>
+                    <button type="submit" class="submit-btn"><b>Demander ce Crédit</b></button>
                     <button type="submit" class="next-btn"><b>Voir Mon Récapitulatif</b></button>
                 </div>
-            </form>
         </div>
     </div>
+        </form>
+    </div>
+    </div>
 
-</div>
 <script src="js/script.js"></script>
 </body>
 </html>

@@ -15,6 +15,12 @@ public class CreditRequest {
     private Long id;
 
     @Column(nullable = false)
+    private String profession;
+
+    @Column(nullable = false)
+    private String project;
+
+    @Column(nullable = false)
     private BigDecimal amount;
 
     @Column(nullable = false)
@@ -28,6 +34,9 @@ public class CreditRequest {
 
     @Column(nullable = false)
     private String mobilePhone;
+
+    @Column(nullable = false)
+    private String civilite;
 
     @Column(nullable = false)
     private String firstName;
@@ -58,6 +67,23 @@ public class CreditRequest {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
+    }
+
 
     public BigDecimal getAmount() {
         return amount;
@@ -98,6 +124,15 @@ public class CreditRequest {
     public void setMobilePhone(String mobilePhone) {
         this.mobilePhone = mobilePhone;
     }
+
+    public String getCivilite() {
+        return civilite;
+    }
+
+    public void setCivilite(String civilite) {
+        this.civilite = civilite;
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -153,5 +188,27 @@ public class CreditRequest {
 
     public void setHasOngoingCredits(boolean hasOngoingCredits) {
         this.hasOngoingCredits = hasOngoingCredits;
+    }
+
+    @Override
+    public String toString() {
+        return "CreditRequest{" +
+                "id=" + id +
+                ", profession='" + profession + '\'' +
+                ", project='" + project + '\'' +
+                ", amount=" + amount +
+                ", duration=" + duration +
+                ", monthlyPayments=" + monthlyPayments +
+                ", email='" + email + '\'' +
+                ", mobilePhone='" + mobilePhone + '\'' +
+                ", civilite='" + civilite + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", cinNumber='" + cinNumber + '\'' +
+                ", birthDate=" + birthDate +
+                ", hiringDate=" + hiringDate +
+                ", totalRevenue=" + totalRevenue +
+                ", hasOngoingCredits=" + hasOngoingCredits +
+                '}';
     }
 }

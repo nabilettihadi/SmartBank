@@ -31,51 +31,64 @@ public class CreditSimulationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String step = request.getParameter("step");
 
-        CreditRequest creditRequest;
+        handleStep1(request);
+        handleStep2(request);
+        handleStep3(request);
+    }
+
+    private void handleStep1(HttpServletRequest request) {
+
+        String profession = request.getParameter("profession");
+        String project = request.getParameter("project");
+        BigDecimal amount = new BigDecimal(request.getParameter("amount"));
+        Integer duration = Integer.parseInt(request.getParameter("duration"));
+        BigDecimal monthlyPayments = new BigDecimal(request.getParameter("monthly"));
+
+        request.getSession().setAttribute("profession", profession);
+        request.getSession().setAttribute("project", project);
+        request.getSession().setAttribute("amount", amount);
+        request.getSession().setAttribute("duration", duration);
+        request.getSession().setAttribute("monthlyPayments", monthlyPayments);
+    }
+
+    private void handleStep2(HttpServletRequest request) {
+
+        String email = request.getParameter("email");
+        String mobilePhone = request.getParameter("phone");
+
+        request.getSession().setAttribute("email", email);
+        request.getSession().setAttribute("mobilePhone", mobilePhone);
+    }
+
+    private void handleStep3(HttpServletRequest request) {
+
+        String civilite = request.getParameter("civilite");
+        String firstName = request.getParameter("prenom");
+        String lastName = request.getParameter("nom");
+        String cinNumber = request.getParameter("cin");
+        LocalDate birthDate = LocalDate.parse(request.getParameter("date-naissance"));
+        LocalDate hiringDate = LocalDate.parse(request.getParameter("date-embauche"));
+        BigDecimal totalRevenue = new BigDecimal(request.getParameter("revenus"));
+        Boolean hasOngoingCredits = "oui".equals(request.getParameter("credit"));
 
 
-        if (request.getSession().getAttribute("creditRequest") == null) {
-            creditRequest = new CreditRequest();
-        } else {
-            creditRequest = (CreditRequest) request.getSession().getAttribute("creditRequest");
-        }
+        CreditRequest creditRequest = new CreditRequest();
+        creditRequest.setProfession((String) request.getSession().getAttribute("profession"));
+        creditRequest.setProject((String) request.getSession().getAttribute("project"));
+        creditRequest.setAmount((BigDecimal) request.getSession().getAttribute("amount"));
+        creditRequest.setDuration((Integer) request.getSession().getAttribute("duration"));
+        creditRequest.setMonthlyPayments((BigDecimal) request.getSession().getAttribute("monthlyPayments"));
+        creditRequest.setEmail((String) request.getSession().getAttribute("email"));
+        creditRequest.setMobilePhone((String) request.getSession().getAttribute("mobilePhone"));
+        creditRequest.setCivilite(civilite);
+        creditRequest.setFirstName(firstName);
+        creditRequest.setLastName(lastName);
+        creditRequest.setCinNumber(cinNumber);
+        creditRequest.setBirthDate(birthDate);
+        creditRequest.setHiringDate(hiringDate);
+        creditRequest.setTotalRevenue(totalRevenue);
+        creditRequest.setHasOngoingCredits(hasOngoingCredits);
 
-        switch (step) {
-            case "step1":
-                creditRequest.setAmount(new BigDecimal(request.getParameter("amount")));
-                creditRequest.setDuration(Integer.parseInt(request.getParameter("duration")));
-                creditRequest.setMonthlyPayments(new BigDecimal(request.getParameter("monthly")));
-                request.getSession().setAttribute("creditRequest", creditRequest);
-                request.getRequestDispatcher("/step2.jsp").forward(request, response);
-
-                System.out.println(creditRequest.getAmount());
-                break;
-
-            case "step2":
-                creditRequest.setEmail(request.getParameter("email"));
-                creditRequest.setMobilePhone(request.getParameter("phone"));
-                request.getSession().setAttribute("creditRequest", creditRequest);
-                request.getRequestDispatcher("/step3.jsp").forward(request, response);
-                break;
-
-            case "step3":
-                creditRequest.setFirstName(request.getParameter("prenom"));
-                creditRequest.setLastName(request.getParameter("nom"));
-                creditRequest.setCinNumber(request.getParameter("cin"));
-                creditRequest.setBirthDate(LocalDate.parse(request.getParameter("date-naissance")));
-                creditRequest.setHiringDate(LocalDate.parse(request.getParameter("date-embauche")));
-                creditRequest.setTotalRevenue(new BigDecimal(request.getParameter("revenus")));
-                creditRequest.setHasOngoingCredits(request.getParameter("credit").equals("oui"));
-
-                creditRequestService.createCreditRequest(creditRequest);
-
-                request.getSession().removeAttribute("creditRequest");
-                response.sendRedirect("success.jsp");
-                break;
-
-            default:
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Étape non reconnue.");
-                break;
-        }
+        creditRequestService.createCreditRequest(creditRequest);
     }
 }
