@@ -45,4 +45,14 @@ public class CreditRequestServiceImpl implements CreditRequestService {
     public List<CreditRequest> getFilteredCreditRequests(CreditRequestStatus status, LocalDate startDate, LocalDate endDate) {
         return creditRequestRepository.findFiltered(status, startDate, endDate);
     }
+
+    @Override
+    public void updateCreditRequestStatus(Long requestId, CreditRequestStatus newStatus) {
+        CreditRequest creditRequest = creditRequestRepository.findById(requestId);
+        if (creditRequest != null) {
+            creditRequest.setStatus(newStatus);
+            creditRequest.setUpdatedAt(LocalDate.now());
+            creditRequestRepository.update(creditRequest);
+        }
+    }
 }

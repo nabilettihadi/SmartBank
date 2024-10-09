@@ -103,4 +103,23 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
 
         return query.getResultList();
     }
+
+    @Override
+    public void updateCreditRequestStatus(Long requestId, CreditRequestStatus newStatus) {
+        EntityManager em = EntityManagerFactoryUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            CreditRequest creditRequest = em.find(CreditRequest.class, requestId);
+            if (creditRequest != null) {
+                creditRequest.setStatus(newStatus);
+                creditRequest.setUpdatedAt(java.time.LocalDate.now());
+                em.merge(creditRequest);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
+
+
 }

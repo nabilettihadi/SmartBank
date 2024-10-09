@@ -19,4 +19,6 @@ public interface CreditRequestRepository {
     List<CreditRequest> findAll();
 
     List<CreditRequest> findFiltered(CreditRequestStatus status, LocalDate startDate, LocalDate endDate);
+
+    void updateCreditRequestStatus(Long requestId, CreditRequestStatus newStatus);
 }

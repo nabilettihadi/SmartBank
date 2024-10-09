@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.smartbank.entities.CreditRequest" %>
+<%@ page import="com.smartbank.entities.CreditRequestStatus" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,15 +12,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
             background-color: #f9f9f9;
+            padding: 20px;
         }
         .container {
             max-width: 1200px;
             margin: auto;
-            padding: 20px;
             background: white;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
@@ -29,23 +30,21 @@
         form {
             margin-bottom: 20px;
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
         }
-        label {
-            font-weight: bold;
+        form label {
+            margin-right: 10px;
         }
-        select, input[type="date"], button {
+        form select, form input[type="date"], form button {
             padding: 10px;
-            border-radius: 4px;
             border: 1px solid #ccc;
-            font-size: 16px;
+            border-radius: 4px;
         }
         button {
             background-color: #28a745;
             color: white;
             cursor: pointer;
-            border: none;
         }
         button:hover {
             background-color: #218838;
@@ -61,23 +60,42 @@
             border-bottom: 1px solid #ddd;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #f4f4f4;
         }
         tr:hover {
             background-color: #f1f1f1;
         }
-        @media (max-width: 600px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-            th, td {
-                padding: 10px;
-                box-sizing: border-box;
-                border: none;
-                border-bottom: 1px solid #ddd;
-            }
-        }
     </style>
+    <script>
+        function autoSubmit(form) {
+            form.submit();
+        }
+
+        function setSelectColors() {
+            const selects = document.querySelectorAll('select[name="status"]');
+            selects.forEach(select => {
+                const selectedValue = select.value;
+                switch (selectedValue) {
+                    case 'PENDING':
+                        select.style.backgroundColor = '#ffc107';
+                        break;
+                    case 'ACCEPTED':
+                        select.style.backgroundColor = '#28a745';
+                        break;
+                    case 'REJECTED':
+                        select.style.backgroundColor = '#dc3545';
+                        break;
+                    case 'CANCELED':
+                        select.style.backgroundColor = '#6c757d';
+                        break;
+                    default:
+                        select.style.backgroundColor = '#fff';
+                }
+            });
+        }
+
+        window.onload = setSelectColors;
+    </script>
 </head>
 <body>
 <div class="container">
@@ -92,11 +110,9 @@
             <option value="CANCELED">CANCELED</option>
         </select>
         <label for="startDate">Start Date:</label>
-        <input type="date" name="startDate" id="startDate" placeholder="Start Date" />
-
+        <input type="date" name="startDate" id="startDate" />
         <label for="endDate">End Date:</label>
-        <input type="date" name="endDate" id="endDate" placeholder="End Date" />
-
+        <input type="date" name="endDate" id="endDate" />
         <button type="submit">Filter</button>
     </form>
 
@@ -116,18 +132,28 @@
         <tbody>
         <%
             List<CreditRequest> creditRequests = (List<CreditRequest>) request.getAttribute("creditRequests");
-            if (creditRequests != null) {
+            if (creditRequests != null && !creditRequests.isEmpty()) {
                 for (CreditRequest creditRequest : creditRequests) {
         %>
         <tr>
-            <td><%= creditRequest.getId() %></td>
-            <td><%= creditRequest.getProfession() %></td>
-            <td><%= creditRequest.getProject() %></td>
-            <td><%= creditRequest.getAmount() %></td>
-            <td><%= creditRequest.getStatus() %></td>
-            <td><%= creditRequest.getCreatedAt().toString() %></td>
-            <td><%= creditRequest.getUpdatedAt().toString() %></td>
-            <td>
+            <td data-label="ID"><%= creditRequest.getId() %></td>
+            <td data-label="Profession"><%= creditRequest.getProfession() %></td>
+            <td data-label="Project"><%= creditRequest.getProject() %></td>
+            <td data-label="Amount"><%= creditRequest.getAmount() %></td>
+            <td data-label="Status">
+                <form method="post" action="${pageContext.request.contextPath}/updateCreditRequestStatus" onchange="autoSubmit(this)">
+                    <input type="hidden" name="id" value="<%= creditRequest.getId() %>">
+                    <select name="status" class="status-select" onchange="autoSubmit(this.form)">
+                        <option value="PENDING" <%= creditRequest.getStatus() == CreditRequestStatus.PENDING ? "selected" : "" %>>PENDING</option>
+                        <option value="ACCEPTED" <%= creditRequest.getStatus() == CreditRequestStatus.ACCEPTED ? "selected" : "" %>>ACCEPTED</option>
+                        <option value="REJECTED" <%= creditRequest.getStatus() == CreditRequestStatus.REJECTED ? "selected" : "" %>>REJECTED</option>
+                        <option value="CANCELED" <%= creditRequest.getStatus() == CreditRequestStatus.CANCELED ? "selected" : "" %>>CANCELED</option>
+                    </select>
+                </form>
+            </td>
+            <td data-label="Created At"><%= creditRequest.getCreatedAt() %></td>
+            <td data-label="Updated At"><%= creditRequest.getUpdatedAt() %></td>
+            <td data-label="Actions">
                 <a href="${pageContext.request.contextPath}/creditRequestDetails?id=<%= creditRequest.getId() %>">View Details</a>
             </td>
         </tr>
@@ -136,7 +162,7 @@
         } else {
         %>
         <tr>
-            <td colspan="8">No credit requests found.</td>
+            <td colspan="8" style="text-align: center;">No credit requests found.</td>
         </tr>
         <%
             }

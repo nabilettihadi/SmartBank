@@ -20,4 +20,6 @@ public interface CreditRequestService {
 
     List<CreditRequest> getFilteredCreditRequests(CreditRequestStatus status, LocalDate startDate, LocalDate endDate);
 
+    void updateCreditRequestStatus(Long requestId, CreditRequestStatus newStatus);
+
 }
