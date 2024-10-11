@@ -1,11 +1,9 @@
 package com.smartbank.web;
 
-import com.smartbank.entities.CreditRequestStatus;
+import com.smartbank.entities.Status;
 import com.smartbank.services.CreditRequestService;
-import com.smartbank.services.impl.CreditRequestServiceImpl;
-import com.smartbank.repositories.CreditRequestRepository;
-import com.smartbank.repositories.impl.CreditRequestRepositoryImpl;
 
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,21 +15,34 @@ import java.io.IOException;
 @WebServlet(name = "CreditRequestStatusServlet", value = "/updateCreditRequestStatus")
 public class CreditRequestStatusServlet extends HttpServlet {
 
+    @Inject
     private CreditRequestService creditRequestService;
 
     @Override
-    public void init() throws ServletException {
-        CreditRequestRepository creditRequestRepository = new CreditRequestRepositoryImpl();
-        creditRequestService = new CreditRequestServiceImpl(creditRequestRepository);
-    }
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Long requestId = Long.parseLong(request.getParameter("id"));
-        CreditRequestStatus newStatus = CreditRequestStatus.valueOf(request.getParameter("status"));
+        Long requestId;
+        String statusParam;
 
-        creditRequestService.updateCreditRequestStatus(requestId, newStatus);
+        try {
 
-        response.sendRedirect(request.getContextPath() + "/creditRequests");
+            requestId = Long.parseLong(request.getParameter("id"));
+            statusParam = request.getParameter("status");
+
+            if (statusParam == null || statusParam.isEmpty()) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Status parameter is missing");
+                return;
+            }
+
+            Status newStatus = Status.valueOf(statusParam.toUpperCase());
+
+            creditRequestService.updateCreditRequestStatus(requestId, newStatus, "Statut mis à jour.");
+
+            response.sendRedirect(request.getContextPath() + "/creditRequests");
+
+        } catch (IllegalArgumentException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status value: " + e.getMessage());
+        } catch (Exception e) {
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating the status: " + e.getMessage());
+        }
     }
 }

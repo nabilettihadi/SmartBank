@@ -1,38 +1,26 @@
 package com.smartbank.config;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
+@ApplicationScoped
 public class EntityManagerFactoryUtil {
+    private EntityManagerFactoryUtil() {}
 
-    private static EntityManagerFactory entityManagerFactory;
+    private static final EntityManagerFactory em =
+            Persistence.createEntityManagerFactory("default");
 
-    private EntityManagerFactoryUtil() {
-    }
-
-    public static EntityManagerFactory getEntityManagerFactory() {
-        if (entityManagerFactory == null) {
-            synchronized (EntityManagerFactoryUtil.class) {
-                if (entityManagerFactory == null) {
-                    try {
-                        entityManagerFactory = Persistence.createEntityManagerFactory("default");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return entityManagerFactory;
-    }
-
-    public static EntityManager getEntityManager() {
-        return getEntityManagerFactory().createEntityManager();
+    @Produces
+    public EntityManager getEntityManager() {
+        return em.createEntityManager();
     }
 
     public static void closeEntityManagerFactory() {
-        if (entityManagerFactory != null) {
-            entityManagerFactory.close();
+        if (em.isOpen()) {
+            em.close();
         }
     }
 }

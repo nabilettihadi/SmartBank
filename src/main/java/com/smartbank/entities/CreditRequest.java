@@ -1,10 +1,9 @@
 package com.smartbank.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table
@@ -59,9 +58,13 @@ public class CreditRequest {
     @Column(nullable = false)
     private boolean hasOngoingCredits;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CreditRequestStatus status;
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
+
+
+    @OneToMany(mappedBy = "creditRequest", cascade = CascadeType.ALL)
+    private List<History> statusHistories;
 
     @Column(nullable = false)
     private LocalDate createdAt;
@@ -69,13 +72,12 @@ public class CreditRequest {
     @Column(nullable = true)
     private LocalDate updatedAt;
 
-    // Constructor
+    // Constructeur
     public CreditRequest() {
         this.createdAt = LocalDate.now();
     }
 
-
-    // Getters and Setters
+    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -99,7 +101,6 @@ public class CreditRequest {
     public void setProject(String project) {
         this.project = project;
     }
-
 
     public BigDecimal getAmount() {
         return amount;
@@ -149,7 +150,6 @@ public class CreditRequest {
         this.civilite = civilite;
     }
 
-
     public String getFirstName() {
         return firstName;
     }
@@ -174,19 +174,19 @@ public class CreditRequest {
         this.cinNumber = cinNumber;
     }
 
-    public LocalDate  getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate  birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
-    public LocalDate  getHiringDate() {
+    public LocalDate getHiringDate() {
         return hiringDate;
     }
 
-    public void setHiringDate(LocalDate  hiringDate) {
+    public void setHiringDate(LocalDate hiringDate) {
         this.hiringDate = hiringDate;
     }
 
@@ -206,6 +206,22 @@ public class CreditRequest {
         this.hasOngoingCredits = hasOngoingCredits;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public List<History> getStatusHistories() {
+        return statusHistories;
+    }
+
+    public void setStatusHistories(List<History> statusHistories) {
+        this.statusHistories = statusHistories;
+    }
+
     public LocalDate getCreatedAt() {
         return createdAt;
     }
@@ -216,14 +232,6 @@ public class CreditRequest {
 
     public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public CreditRequestStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(CreditRequestStatus status) {
-        this.status = status;
     }
 
     @Override

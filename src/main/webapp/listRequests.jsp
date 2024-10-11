@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.smartbank.entities.CreditRequest" %>
-<%@ page import="com.smartbank.entities.CreditRequestStatus" %>
+<%@ page import="com.smartbank.entities.Status" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -144,10 +144,11 @@
                 <form method="post" action="${pageContext.request.contextPath}/updateCreditRequestStatus" onchange="autoSubmit(this)">
                     <input type="hidden" name="id" value="<%= creditRequest.getId() %>">
                     <select name="status" class="status-select" onchange="autoSubmit(this.form)">
-                        <option value="PENDING" <%= creditRequest.getStatus() == CreditRequestStatus.PENDING ? "selected" : "" %>>PENDING</option>
-                        <option value="ACCEPTED" <%= creditRequest.getStatus() == CreditRequestStatus.ACCEPTED ? "selected" : "" %>>ACCEPTED</option>
-                        <option value="REJECTED" <%= creditRequest.getStatus() == CreditRequestStatus.REJECTED ? "selected" : "" %>>REJECTED</option>
-                        <option value="CANCELED" <%= creditRequest.getStatus() == CreditRequestStatus.CANCELED ? "selected" : "" %>>CANCELED</option>
+                        <option value="PENDING" <%= creditRequest.getStatus() != null && creditRequest.getStatus().getName().equals("PENDING") ? "selected" : "" %>>PENDING</option>
+                        <option value="ACCEPTED" <%= creditRequest.getStatus() != null && creditRequest.getStatus().getName().equals("ACCEPTED") ? "selected" : "" %>>ACCEPTED</option>
+                        <option value="REJECTED" <%= creditRequest.getStatus() != null && creditRequest.getStatus().getName().equals("REJECTED") ? "selected" : "" %>>REJECTED</option>
+                        <option value="CANCELED" <%= creditRequest.getStatus() != null && creditRequest.getStatus().getName().equals("CANCELED") ? "selected" : "" %>>CANCELED</option>
+
                     </select>
                 </form>
             </td>

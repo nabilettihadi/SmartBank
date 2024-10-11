@@ -1,13 +1,13 @@
 package com.smartbank.services;
 
 import com.smartbank.entities.CreditRequest;
-import com.smartbank.entities.CreditRequestStatus;
+import com.smartbank.entities.Status;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public interface CreditRequestService {
 
+public interface CreditRequestService {
     CreditRequest createCreditRequest(CreditRequest creditRequest);
 
     CreditRequest getCreditRequestById(Long id);
@@ -18,8 +18,7 @@ public interface CreditRequestService {
 
     List<CreditRequest> getAllCreditRequests();
 
-    List<CreditRequest> getFilteredCreditRequests(CreditRequestStatus status, LocalDate startDate, LocalDate endDate);
+    List<CreditRequest> getFilteredCreditRequests(Status status, LocalDate startDate, LocalDate endDate);
 
-    void updateCreditRequestStatus(Long requestId, CreditRequestStatus newStatus);
-
+    void updateCreditRequestStatus(Long requestId, Status newStatus, String description);
 }

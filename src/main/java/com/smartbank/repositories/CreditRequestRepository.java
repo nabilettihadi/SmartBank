@@ -1,7 +1,7 @@
 package com.smartbank.repositories;
 
 import com.smartbank.entities.CreditRequest;
-import com.smartbank.entities.CreditRequestStatus;
+import com.smartbank.entities.Status;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +18,7 @@ public interface CreditRequestRepository {
 
     List<CreditRequest> findAll();
 
-    List<CreditRequest> findFiltered(CreditRequestStatus status, LocalDate startDate, LocalDate endDate);
+    List<CreditRequest> findFiltered(Status status, LocalDate startDate, LocalDate endDate);
 
-    void updateCreditRequestStatus(Long requestId, CreditRequestStatus newStatus);
+    void updateCreditRequestStatus(Long requestId, Status newStatus);
 }
