@@ -7,11 +7,19 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
+
 @ApplicationScoped
 public class StatusRepositoryImpl implements StatusRepository {
 
     @Inject
     private EntityManager em;
+
+    @Override
+    public Status findById(Long id) {
+        return em.find(Status.class, id);
+    }
 
     @Override
     public Status findByName(String name) {
@@ -27,11 +35,13 @@ public class StatusRepositoryImpl implements StatusRepository {
     @Override
     @Transactional
     public Status save(Status status) {
-        try {
-            em.persist(status);
-            return status;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to save status", e);
-        }
+        em.persist(status);
+        return status;
+    }
+
+    @Override
+    public List<Status> findAll() {
+        return em.createQuery("SELECT s FROM Status s", Status.class)
+                .getResultList();
     }
 }

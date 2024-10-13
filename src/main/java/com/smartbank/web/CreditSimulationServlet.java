@@ -1,8 +1,8 @@
 package com.smartbank.web;
 
 import com.smartbank.entities.CreditRequest;
-import com.smartbank.entities.Status;
 import com.smartbank.services.CreditRequestService;
+import com.smartbank.services.StatusService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -20,68 +22,56 @@ public class CreditSimulationServlet extends HttpServlet {
     @Inject
     private CreditRequestService creditRequestService;
 
-    public CreditSimulationServlet() {
+    @Inject
+    private StatusService statusService;
 
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        handleStep1(request);
-        handleStep2(request);
-        handleStep3(request, response);
+        try {
+            CreditRequest creditRequest = createCreditRequest(request);
+            CreditRequest savedRequest = creditRequestService.createCreditRequest(creditRequest);
+
+            if (savedRequest != null && savedRequest.getId() != null) {
+                response.sendRedirect(request.getContextPath() + "/creditRequests");
+            } else {
+                throw new Exception("Credit request was not saved successfully");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String stackTrace = sw.toString();
+            System.out.println("Full stack trace: " + stackTrace);
+            request.setAttribute("error", "Error processing credit request: " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+        }
     }
 
-    private void handleStep1(HttpServletRequest request) {
-        String profession = request.getParameter("profession");
-        String project = request.getParameter("project");
-        BigDecimal amount = new BigDecimal(request.getParameter("amount"));
-        int duration = Integer.parseInt(request.getParameter("duration"));
-        BigDecimal monthlyPayments = new BigDecimal(request.getParameter("monthly"));
-
-        request.getSession().setAttribute("profession", profession);
-        request.getSession().setAttribute("project", project);
-        request.getSession().setAttribute("amount", amount);
-        request.getSession().setAttribute("duration", duration);
-        request.getSession().setAttribute("monthlyPayments", monthlyPayments);
-    }
-
-    private void handleStep2(HttpServletRequest request) {
-        String email = request.getParameter("email");
-        String mobilePhone = request.getParameter("phone");
-        request.getSession().setAttribute("email", email);
-        request.getSession().setAttribute("mobilePhone", mobilePhone);
-    }
-
-    private void handleStep3(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String civilite = request.getParameter("civilite");
-        String firstName = request.getParameter("prenom");
-        String lastName = request.getParameter("nom");
-        String cinNumber = request.getParameter("cin");
-        LocalDate birthDate = LocalDate.parse(request.getParameter("date-naissance"));
-        LocalDate hiringDate = LocalDate.parse(request.getParameter("date-embauche"));
-        BigDecimal totalRevenue = new BigDecimal(request.getParameter("revenus"));
-        boolean hasOngoingCredits = "oui".equalsIgnoreCase(request.getParameter("credit"));
-
+    private CreditRequest createCreditRequest(HttpServletRequest request) {
         CreditRequest creditRequest = new CreditRequest();
-        creditRequest.setProfession((String) request.getSession().getAttribute("profession"));
-        creditRequest.setProject((String) request.getSession().getAttribute("project"));
-        creditRequest.setAmount((BigDecimal) request.getSession().getAttribute("amount"));
-        creditRequest.setDuration((Integer) request.getSession().getAttribute("duration"));
-        creditRequest.setMonthlyPayments((BigDecimal) request.getSession().getAttribute("monthlyPayments"));
-        creditRequest.setEmail((String) request.getSession().getAttribute("email"));
-        creditRequest.setMobilePhone((String) request.getSession().getAttribute("mobilePhone"));
-        creditRequest.setCivilite(civilite);
-        creditRequest.setFirstName(firstName);
-        creditRequest.setLastName(lastName);
-        creditRequest.setCinNumber(cinNumber);
-        creditRequest.setBirthDate(birthDate);
-        creditRequest.setHiringDate(hiringDate);
-        creditRequest.setTotalRevenue(totalRevenue);
-        creditRequest.setHasOngoingCredits(hasOngoingCredits);
-        creditRequest.setUpdatedAt(LocalDate.now());
 
-        CreditRequest savedCreditRequest = creditRequestService.createCreditRequest(creditRequest);
+        creditRequest.setProfession(request.getParameter("profession"));
+        creditRequest.setProject(request.getParameter("project"));
+        creditRequest.setAmount(new BigDecimal(request.getParameter("amount")));
+        creditRequest.setDuration(Integer.parseInt(request.getParameter("duration")));
+        creditRequest.setMonthlyPayments(new BigDecimal(request.getParameter("monthly")));
+        creditRequest.setEmail(request.getParameter("email"));
+        creditRequest.setMobilePhone(request.getParameter("phone"));
+        creditRequest.setCivilite(request.getParameter("civilite"));
+        creditRequest.setFirstName(request.getParameter("prenom"));
+        creditRequest.setLastName(request.getParameter("nom"));
+        creditRequest.setCinNumber(request.getParameter("cin"));
+        creditRequest.setBirthDate(LocalDate.parse(request.getParameter("date-naissance")));
+        creditRequest.setHiringDate(LocalDate.parse(request.getParameter("date-embauche")));
+        creditRequest.setTotalRevenue(new BigDecimal(request.getParameter("revenus")));
+        creditRequest.setHasOngoingCredits("oui".equalsIgnoreCase(request.getParameter("credit")));
 
-        response.sendRedirect(request.getContextPath() + "/creditRequests");
+        return creditRequest;
     }
 }

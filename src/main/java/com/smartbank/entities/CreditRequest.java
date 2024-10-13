@@ -3,12 +3,12 @@ package com.smartbank.entities;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "credit_request")
 public class CreditRequest {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,26 +58,30 @@ public class CreditRequest {
     @Column(nullable = false)
     private boolean hasOngoingCredits;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id")
-    private Status status;
-
-
-    @OneToMany(mappedBy = "creditRequest", cascade = CascadeType.ALL)
-    private List<History> statusHistories;
+    @OneToMany(mappedBy = "creditRequest", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<History> histories = new ArrayList<>();
 
     @Column(nullable = false)
-    private LocalDate createdAt;
+    private LocalDate createdAt = LocalDate.now();
 
     @Column(nullable = true)
     private LocalDate updatedAt;
 
-    // Constructeur
-    public CreditRequest() {
-        this.createdAt = LocalDate.now();
+    @ManyToOne
+    @JoinColumn(name = "status_id", nullable = false)
+    private Status currentStatus;
+
+    public void addHistory(History history) {
+        if (this.histories == null) {
+            this.histories = new ArrayList<>();
+        }
+        this.histories.add(history);
+        history.setCreditRequest(this);
+        this.updatedAt = LocalDate.now();
     }
 
-    // Getters et Setters
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -206,24 +210,31 @@ public class CreditRequest {
         this.hasOngoingCredits = hasOngoingCredits;
     }
 
-    public Status getStatus() {
-        return status;
+    public List<History> getHistories() {
+        return histories;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
     }
 
-    public List<History> getStatusHistories() {
-        return statusHistories;
+
+
+    public Status getCurrentStatus() {
+        return currentStatus;
     }
 
-    public void setStatusHistories(List<History> statusHistories) {
-        this.statusHistories = statusHistories;
+    public void setCurrentStatus(Status currentStatus) {
+        this.currentStatus = currentStatus;
     }
+
 
     public LocalDate getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
     }
 
     public LocalDate getUpdatedAt() {
@@ -253,7 +264,6 @@ public class CreditRequest {
                 ", hiringDate=" + hiringDate +
                 ", totalRevenue=" + totalRevenue +
                 ", hasOngoingCredits=" + hasOngoingCredits +
-                ", status=" + status +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

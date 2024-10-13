@@ -4,24 +4,37 @@ import com.smartbank.entities.CreditRequest;
 import com.smartbank.entities.Status;
 import com.smartbank.repositories.CreditRequestRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-@ApplicationScoped
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+@RequestScoped
 public class CreditRequestRepositoryImpl implements CreditRequestRepository {
+
+    private static final Logger LOGGER = Logger.getLogger(CreditRequestRepositoryImpl.class.getName());
 
     @Inject
     private EntityManager em;
 
     @Override
-    @Transactional
     public CreditRequest save(CreditRequest creditRequest) {
-        em.persist(creditRequest);
-        return creditRequest;
+        try {
+            em.getTransaction().begin();
+            em.persist(creditRequest);
+            em.getTransaction().commit();
+            return creditRequest;
+
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
@@ -48,7 +61,7 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
 
     @Override
     public List<CreditRequest> findAll() {
-        return em.createQuery("FROM CreditRequest", CreditRequest.class).getResultList();
+        return em.createQuery("SELECT cr FROM CreditRequest cr", CreditRequest.class).getResultList();
     }
 
     @Override
@@ -56,7 +69,7 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
         StringBuilder queryString = new StringBuilder("SELECT cr FROM CreditRequest cr WHERE 1=1");
 
         if (status != null) {
-            queryString.append(" AND cr.Status = :status");
+            queryString.append(" AND cr.currentStatus = :status");
         }
         if (startDate != null) {
             queryString.append(" AND cr.createdAt >= :startDate");
@@ -78,18 +91,5 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
         }
 
         return query.getResultList();
-    }
-
-    @Override
-    @Transactional
-    public void updateCreditRequestStatus(Long requestId, Status newStatus) {
-        CreditRequest creditRequest = em.find(CreditRequest.class, requestId);
-        if (creditRequest != null) {
-            creditRequest.setStatus(newStatus);
-            creditRequest.setUpdatedAt(LocalDate.now());
-            em.merge(creditRequest);
-        } else {
-            throw new IllegalArgumentException("Credit request with ID " + requestId + " not found.");
-        }
     }
 }

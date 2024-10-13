@@ -1,5 +1,6 @@
 package com.smartbank.config;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.persistence.EntityManager;
@@ -8,19 +9,21 @@ import jakarta.persistence.Persistence;
 
 @ApplicationScoped
 public class EntityManagerFactoryUtil {
-    private EntityManagerFactoryUtil() {}
-
-    private static final EntityManagerFactory em =
+    private static final EntityManagerFactory emFactory =
             Persistence.createEntityManagerFactory("default");
 
     @Produces
-    public EntityManager getEntityManager() {
-        return em.createEntityManager();
+    @ApplicationScoped
+    public EntityManager createEntityManager() {
+        EntityManagerFactory emf =
+                Persistence.createEntityManagerFactory("default");
+        return emf.createEntityManager();
     }
 
-    public static void closeEntityManagerFactory() {
-        if (em.isOpen()) {
-            em.close();
+    @PreDestroy
+    public void closeEntityManagerFactory() {
+        if (emFactory.isOpen()) {
+            emFactory.close();
         }
     }
 }

@@ -1,42 +1,40 @@
 package com.smartbank.entities;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table
+@Table(name = "history")
 public class History {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "credit_request_id", nullable = false)
     private CreditRequest creditRequest;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
     @Column(nullable = false)
-    private LocalDate changeDate;
-
-    @Column(nullable = true)
     private String description;
 
-    // Constructeur par défaut
-    public History() {}
+    @Column(nullable = false)
+    private LocalDateTime changeDate;
 
-    // Constructeur avec paramètres
+    public History() {
+        this.changeDate = LocalDateTime.now();
+    }
+
     public History(CreditRequest creditRequest, Status status, String description) {
+        this();
         this.creditRequest = creditRequest;
         this.status = status;
-        this.changeDate = LocalDate.now();
         this.description = description;
     }
 
-    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -61,19 +59,29 @@ public class History {
         this.status = status;
     }
 
-    public LocalDate getChangeDate() {
-        return changeDate;
-    }
-
-    public void setChangeDate(LocalDate changeDate) {
-        this.changeDate = changeDate;
-    }
-
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getChangeDate() {
+        return changeDate;
+    }
+
+    public void setChangeDate(LocalDateTime changeDate) {
+        this.changeDate = changeDate;
+    }
+
+    @Override
+    public String toString() {
+        return "History{" +
+                "id=" + id +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                ", changeDate=" + changeDate +
+                '}';
     }
 }
