@@ -77,7 +77,12 @@ public class CreditRequest {
         }
         this.histories.add(history);
         history.setCreditRequest(this);
+    }
+    public void updateStatus(Status newStatus, String description) {
+        this.currentStatus = newStatus;
         this.updatedAt = LocalDate.now();
+        History history = new History(this, newStatus, description);
+        this.addHistory(history);
     }
 
     // Getters and Setters

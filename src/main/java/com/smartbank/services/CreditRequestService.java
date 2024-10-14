@@ -13,5 +13,5 @@ public interface CreditRequestService {
     void deleteCreditRequest(Long id);
     List<CreditRequest> getAllCreditRequests();
     List<CreditRequest> getFilteredCreditRequests(Status status, LocalDate startDate, LocalDate endDate);
-    void updateCreditRequestStatus(Long requestId, Status newStatus, String description);
+    void updateCreditRequestStatus(Long requestId, Long statusId, String description);
 }

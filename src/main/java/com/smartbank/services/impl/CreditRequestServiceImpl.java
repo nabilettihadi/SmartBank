@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,15 +83,20 @@ public class CreditRequestServiceImpl implements CreditRequestService {
         return creditRequestRepository.findFiltered(status, startDate, endDate);
     }
 
+    @Override
     @Transactional
-    public void updateCreditRequestStatus(Long requestId, Status newStatus, String description) {
+    public void updateCreditRequestStatus(Long requestId, Long statusId, String description) {
         CreditRequest creditRequest = creditRequestRepository.findById(requestId);
-        if (creditRequest != null) {
-            creditRequest.setCurrentStatus(newStatus);
-            creditRequest.setUpdatedAt(LocalDate.now());
-            creditRequestRepository.update(creditRequest);
-        } else {
-            throw new IllegalArgumentException("Credit request with ID " + requestId + " not found.");
+        if (creditRequest == null) {
+            throw new IllegalArgumentException("Demande de crédit non trouvée");
         }
+
+        Status newStatus = statusRepository.findById(statusId);
+        if (newStatus == null) {
+            throw new IllegalArgumentException("Statut non trouvé");
+        }
+
+        creditRequest.updateStatus(newStatus, description);
+        creditRequestRepository.update(creditRequest);
     }
 }

@@ -27,7 +27,7 @@ public class CreditSimulationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CreditSimulationServlet extends HttpServlet {
             String stackTrace = sw.toString();
             System.out.println("Full stack trace: " + stackTrace);
             request.setAttribute("error", "Error processing credit request: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+            request.getRequestDispatcher("index.jsp").forward(request, response);
         }
     }
 

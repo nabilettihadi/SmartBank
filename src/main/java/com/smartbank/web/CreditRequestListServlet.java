@@ -4,7 +4,6 @@ import com.smartbank.entities.CreditRequest;
 import com.smartbank.entities.Status;
 import com.smartbank.services.CreditRequestService;
 import com.smartbank.services.StatusService;
-
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,29 +26,41 @@ public class CreditRequestListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String statusParam = request.getParameter("status");
-        String startDateParam = request.getParameter("startDate");
-        String endDateParam = request.getParameter("endDate");
+        String statusFilter = request.getParameter("status");
+        String startDateStr = request.getParameter("startDate");
+        String endDateStr = request.getParameter("endDate");
 
-        LocalDate startDate = (startDateParam != null && !startDateParam.isEmpty()) ? LocalDate.parse(startDateParam) : null;
-        LocalDate endDate = (endDateParam != null && !endDateParam.isEmpty()) ? LocalDate.parse(endDateParam) : null;
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+
+        if (startDateStr != null && !startDateStr.isEmpty()) {
+            try {
+                startDate = LocalDate.parse(startDateStr);
+            } catch (Exception e) {
+                // Log l'erreur ou gérez-la comme vous le souhaitez
+            }
+        }
+
+        if (endDateStr != null && !endDateStr.isEmpty()) {
+            try {
+                endDate = LocalDate.parse(endDateStr);
+            } catch (Exception e) {
+                // Log l'erreur ou gérez-la comme vous le souhaitez
+            }
+        }
 
         List<CreditRequest> creditRequests;
-
-        try {
-            Status status = null;
-            if (statusParam != null && !statusParam.isEmpty()) {
-                status = statusService.getStatusByName(statusParam.toUpperCase());
-            }
-
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            Status status = statusService.getStatusByName(statusFilter);
             creditRequests = creditRequestService.getFilteredCreditRequests(status, startDate, endDate);
-
-            request.setAttribute("creditRequests", creditRequests);
-            request.setAttribute("statuses", statusService.getAllStatuses());
-            request.getRequestDispatcher("/WEB-INF/views/listRequests.jsp").forward(request, response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error retrieving credit requests: " + e.getMessage());
+        } else {
+            creditRequests = creditRequestService.getAllCreditRequests();
         }
+
+        List<Status> allStatuses = statusService.getAllStatuses();
+
+        request.setAttribute("creditRequests", creditRequests);
+        request.setAttribute("allStatuses", allStatuses);
+        request.getRequestDispatcher("/WEB-INF/views/listRequests.jsp").forward(request, response);
     }
 }

@@ -34,7 +34,7 @@ public class CreditRequestDetailsServlet extends HttpServlet {
             }
 
             request.setAttribute("creditRequest", creditRequest);
-            request.getRequestDispatcher("/WEB-INF/views/creditRequestDetails.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/details.jsp").forward(request, response);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credit request ID");
         }

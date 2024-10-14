@@ -1,9 +1,9 @@
 package com.smartbank.web;
 
-import com.smartbank.entities.Status;
 import com.smartbank.services.CreditRequestService;
 import com.smartbank.services.StatusService;
 import jakarta.inject.Inject;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,33 +21,17 @@ public class CreditRequestStatusServlet extends HttpServlet {
     private StatusService statusService;
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        long requestId;
-        String statusParam;
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long requestId = Long.parseLong(request.getParameter("id"));
+        Long statusId = Long.parseLong(request.getParameter("statusId"));
+        String description = request.getParameter("description");
 
         try {
-            requestId = Long.parseLong(request.getParameter("id"));
-            statusParam = request.getParameter("status");
-
-            if (statusParam == null || statusParam.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Status parameter is missing");
-                return;
-            }
-
-            Status newStatus = statusService.getStatusByName(statusParam);
-            if (newStatus == null) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status value: " + statusParam);
-                return;
-            }
-
-            creditRequestService.updateCreditRequestStatus(requestId, newStatus, "Statut mis à jour.");
-
+            creditRequestService.updateCreditRequestStatus(requestId, statusId, description);
             response.sendRedirect(request.getContextPath() + "/creditRequests");
-
-        } catch (IllegalArgumentException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request ID: " + e.getMessage());
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating the status: " + e.getMessage());
+            request.setAttribute("error", "Erreur lors de la mise à jour du statut : " + e.getMessage());
+            request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
         }
     }
 }

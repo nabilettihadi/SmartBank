@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@RequestScoped
+@ApplicationScoped
 public class CreditRequestRepositoryImpl implements CreditRequestRepository {
 
     private static final Logger LOGGER = Logger.getLogger(CreditRequestRepositoryImpl.class.getName());
@@ -43,9 +43,18 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
     }
 
     @Override
-    @Transactional
     public CreditRequest update(CreditRequest creditRequest) {
-        return em.merge(creditRequest);
+        try {
+            em.getTransaction().begin();
+            CreditRequest updatedRequest = em.merge(creditRequest);
+            em.getTransaction().commit();
+            return updatedRequest;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
