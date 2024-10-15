@@ -1,7 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.smartbank.entities.CreditRequest" %>
-<%@ page import="com.smartbank.entities.History" %>
-<%@ page import="java.util.List" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -46,71 +44,61 @@
 <div class="container">
     <h1>Détails de la demande de crédit</h1>
 
-    <%
-        CreditRequest creditRequest = (CreditRequest) request.getAttribute("creditRequest");
-        if (creditRequest != null) {
-    %>
-    <table>
-        <tr><th>ID</th><td><%= creditRequest.getId() != null ? creditRequest.getId() : "Non défini" %></td></tr>
-        <tr><th>Profession</th><td><%= creditRequest.getProfession() != null ? creditRequest.getProfession() : "Non définie" %></td></tr>
-        <tr><th>Projet</th><td><%= creditRequest.getProject() != null ? creditRequest.getProject() : "Non défini" %></td></tr>
-        <tr><th>Montant</th><td><%= creditRequest.getAmount() != null ? creditRequest.getAmount() : "Non défini" %></td></tr>
-        <tr><th>Durée</th><td><%= creditRequest.getDuration() %> mois</td></tr>
-        <tr><th>Paiements mensuels</th><td><%= creditRequest.getMonthlyPayments() != null ? creditRequest.getMonthlyPayments() : "Non définis" %></td></tr>
-        <tr><th>Email</th><td><%= creditRequest.getEmail() != null ? creditRequest.getEmail() : "Non défini" %></td></tr>
-        <tr><th>Téléphone</th><td><%= creditRequest.getMobilePhone() != null ? creditRequest.getMobilePhone() : "Non défini" %></td></tr>
-        <tr><th>Civilité</th><td><%= creditRequest.getCivilite() != null ? creditRequest.getCivilite() : "Non définie" %></td></tr>
-        <tr><th>Prénom</th><td><%= creditRequest.getFirstName() != null ? creditRequest.getFirstName() : "Non défini" %></td></tr>
-        <tr><th>Nom</th><td><%= creditRequest.getLastName() != null ? creditRequest.getLastName() : "Non défini" %></td></tr>
-        <tr><th>Numéro CIN</th><td><%= creditRequest.getCinNumber() != null ? creditRequest.getCinNumber() : "Non défini" %></td></tr>
-        <tr><th>Date de naissance</th><td><%= creditRequest.getBirthDate() != null ? creditRequest.getBirthDate() : "Non définie" %></td></tr>
-        <tr><th>Date d'embauche</th><td><%= creditRequest.getHiringDate() %></td></tr>
-        <tr><th>Revenu total</th><td><%= creditRequest.getTotalRevenue() %></td></tr>
-        <tr><th>Crédits en cours</th><td><%= creditRequest.isHasOngoingCredits() ? "Oui" : "Non" %></td></tr>
-        <tr><th>Statut actuel</th><td><%= creditRequest.getCurrentStatus() != null ? creditRequest.getCurrentStatus().getName() : "Non définie" %></td></tr>
-        <tr><th>Date de création</th><td><%= creditRequest.getCreatedAt() %></td></tr>
-        <tr><th>Dernière mise à jour</th><td><%= creditRequest.getUpdatedAt() %></td></tr>
-    </table>
+    <jsp:useBean id="creditRequest" scope="request" type="com.smartbank.entities.CreditRequest"/>
 
-    <h2>Historique des modifications</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Statut</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <%
-            List<History> histories = creditRequest.getHistories();
-            if (histories != null && !histories.isEmpty()) {
-                for (History history : histories) {
-        %>
-        <tr>
-            <td><%= history.getChangeDate() %></td>
-            <td><%= history.getStatus().getName() %></td>
-            <td><%= history.getDescription() %></td>
-        </tr>
-        <%
-            }
-        } else {
-        %>
-        <tr>
-            <td colspan="3">Aucun historique disponible</td>
-        </tr>
-        <%
-            }
-        %>
-        </tbody>
-    </table>
-    <%
-    } else {
-    %>
-    <p>Aucune demande de crédit trouvée.</p>
-    <%
-        }
-    %>
+    <c:choose>
+        <c:when test="${not empty creditRequest}">
+            <table>
+                <tr><th>ID</th><td>${creditRequest.id != null ? creditRequest.id : 'Non défini'}</td></tr>
+                <tr><th>Profession</th><td>${creditRequest.profession != null ? creditRequest.profession : 'Non définie'}</td></tr>
+                <tr><th>Projet</th><td>${creditRequest.project != null ? creditRequest.project : 'Non défini'}</td></tr>
+                <tr><th>Montant</th><td>${creditRequest.amount != null ? creditRequest.amount : 'Non défini'}</td></tr>
+                <tr><th>Durée</th><td>${creditRequest.duration} mois</td></tr>
+                <tr><th>Paiements mensuels</th><td>${creditRequest.monthlyPayments != null ? creditRequest.monthlyPayments : 'Non définis'}</td></tr>
+                <tr><th>Email</th><td>${creditRequest.email != null ? creditRequest.email : 'Non défini'}</td></tr>
+                <tr><th>Téléphone</th><td>${creditRequest.mobilePhone != null ? creditRequest.mobilePhone : 'Non défini'}</td></tr>
+                <tr><th>Civilité</th><td>${creditRequest.civilite != null ? creditRequest.civilite : 'Non définie'}</td></tr>
+                <tr><th>Prénom</th><td>${creditRequest.firstName != null ? creditRequest.firstName : 'Non défini'}</td></tr>
+                <tr><th>Nom</th><td>${creditRequest.lastName != null ? creditRequest.lastName : 'Non défini'}</td></tr>
+                <tr><th>Numéro CIN</th><td>${creditRequest.cinNumber != null ? creditRequest.cinNumber : 'Non défini'}</td></tr>
+                <tr><th>Date de naissance</th><td>${creditRequest.birthDate != null ? creditRequest.birthDate : 'Non définie'}</td></tr>
+                <tr><th>Date d'embauche</th><td>${creditRequest.hiringDate}</td></tr>
+                <tr><th>Revenu total</th><td>${creditRequest.totalRevenue}</td></tr>
+                <tr><th>Crédits en cours</th><td>${creditRequest.hasOngoingCredits ? 'Oui' : 'Non'}</td></tr>
+                <tr><th>Statut actuel</th><td>${creditRequest.currentStatus != null ? creditRequest.currentStatus.name : 'Non définie'}</td></tr>
+                <tr><th>Date de création</th><td>${creditRequest.createdAt}</td></tr>
+                <tr><th>Dernière mise à jour</th><td>${creditRequest.updatedAt}</td></tr>
+            </table>
+
+            <h2>Historique des modifications</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="history" items="${creditRequest.histories}">
+                    <tr>
+                        <td>${history.changeDate}</td>
+                        <td>${history.status.name}</td>
+                        <td>${history.description}</td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty creditRequest.histories}">
+                    <tr>
+                        <td colspan="3">Aucun historique disponible</td>
+                    </tr>
+                </c:if>
+                </tbody>
+            </table>
+        </c:when>
+        <c:otherwise>
+            <p>Aucune demande de crédit trouvée.</p>
+        </c:otherwise>
+    </c:choose>
 
     <a href="${pageContext.request.contextPath}/creditRequests" style="display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Retour à la liste</a>
 </div>
