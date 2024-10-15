@@ -79,7 +79,7 @@ Après avoir déployé l'application :
 - **details.jsp** : Affiche les détails d'une demande de crédit.
   ```src/main/webapp/WEB-INF/views/details.jsp
   startLine: 1
-  endLine: 99
+  endLine: 106
   ```
 - **CreditRequestStatusServlet.java** : Servlet pour mettre à jour le statut des demandes de crédit.
   ```java:src/main/java/com/smartbank/web/CreditRequestStatusServlet.java
@@ -88,13 +88,13 @@ Après avoir déployé l'application :
   ```
 - **CreditSimulationServlet.java** : Gère la création de demandes de crédit à partir des simulations.
   ```java:src/main/java/com/smartbank/web/CreditSimulationServlet.java
-  startLine: 56
+  startLine: 1
   endLine: 77
   ```
 - **listRequests.jsp** : Affiche la liste des demandes de crédit.
   ```src/main/webapp/WEB-INF/views/listRequests.jsp
-  startLine: 1
-  endLine: 37
+  startLine: 130
+  endLine: 194
   ```
 
 ## Contribution
