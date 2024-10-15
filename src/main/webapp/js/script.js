@@ -19,25 +19,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return Math.round((amount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -duration)));
     }
 
-    function calculateLoanAmount(monthly, duration) {
-        const monthlyRate = interestRate / 12;
-        return Math.round((monthly * (1 - Math.pow(1 + monthlyRate, -duration))) / monthlyRate);
-    }
-
     function updateMonthly() {
         const amount = parseInt(amountInput.value);
         const duration = parseInt(durationInput.value);
         const monthly = calculateMonthlyPayment(amount, duration);
         monthlyInput.value = monthly;
         monthlyValue.textContent = monthly;
-    }
-
-    function updateAmount() {
-        const monthly = parseInt(monthlyInput.value);
-        const duration = parseInt(durationInput.value);
-        const amount = calculateLoanAmount(monthly, duration);
-        amountInput.value = amount;
-        amountValue.textContent = amount;
     }
 
     function updateStep() {
@@ -68,10 +55,38 @@ document.addEventListener("DOMContentLoaded", function () {
         updateMonthly();
     });
 
-    monthlyInput.addEventListener("input", function () {
-        monthlyValue.textContent = monthlyInput.value;
-        updateAmount();
-    });
+    function updateRecap() {
+        const project = document.getElementById("project").value;
+        const profession = document.getElementById("profession").value;
+        const amount = amountInput.value;
+        const duration = durationInput.value;
+        const monthly = monthlyInput.value;
+        const email = document.getElementById("email").value || "nabil@gmail.com";
+        const phone = document.getElementById("phone").value || "0610203040";
+        const nom = document.getElementById("nom").value || "nassif";
+        const prenom = document.getElementById("prenom").value || "mohammed";
+
+        if (currentStep >=1) {
+            document.getElementById("recap-project").textContent = project;
+            document.getElementById("recap-credit-title").style.display = "block";
+            document.getElementById("recap-credit").innerHTML = `
+                Vous êtes: ${profession}<br>
+                Montant: ${amount} DH<br>
+                Durée: ${duration} mois<br>
+                Mensualité: ${monthly} DH<br>
+                Frais de dossier: 271,50 DH
+            `;
+        }
+        if (currentStep >= 2) {
+            document.getElementById("recap-coord-title").style.display = "block";
+            document.getElementById("recap-coord").innerHTML = `
+                Nom: ${nom}<br>
+                Prénom: ${prenom}<br>
+                Email: ${email}<br>
+                Téléphone: ${phone}
+            `;
+        }
+    }
 
     nextButtons.forEach((button, index) => {
         button.addEventListener("click", function () {
@@ -80,14 +95,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 validationFunction = validateStep1;
             } else if (index === 1) {
                 validationFunction = validateStep2;
-            } else if (index === 2) {
-                validationFunction = validateStep3;
             }
+
             if (validationFunction && validationFunction()) {
+                updateRecap();
                 currentStep++;
                 updateStep();
             }
         });
+    });
+
+    document.querySelector(".submit-btn").addEventListener("click", function (event) {
+        if (!validateStep3()) {
+            event.preventDefault();
+        }
     });
 
     function validateStep1() {
@@ -98,16 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!project || !profession || !amount || !duration) {
             alert("Veuillez sélectionner tous les champs obligatoires.");
-            return false;
-        }
-
-        if (amount <= 0) {
-            alert("Le montant doit être supérieur à 0.");
-            return false;
-        }
-
-        if (duration < 12 || duration > 120) {
-            alert("La durée doit être comprise entre 12 et 120 mois.");
             return false;
         }
 
@@ -147,6 +158,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!nom || !prenom || !cin || !dateNaissance || !dateEmbauche || !revenus) {
             alert("Veuillez remplir tous les champs obligatoires.");
+            return false;
+        }
+
+        if (new Date(dateNaissance) >= new Date(dateEmbauche)) {
+            alert("La date de naissance doit être inférieure à la date d'embauche.");
             return false;
         }
 
