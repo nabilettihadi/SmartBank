@@ -45,20 +45,27 @@ public class CreditRequestServiceImpl implements CreditRequestService {
             }
 
             creditRequest.setCreatedAt(LocalDate.now());
-            creditRequest.setCurrentStatus(pendingStatus);
-
-            LOGGER.info("Saving credit request: " + creditRequest);
             CreditRequest savedRequest = creditRequestRepository.save(creditRequest);
             LOGGER.info("Credit request saved successfully: " + savedRequest);
 
             History initialHistory = new History(savedRequest, pendingStatus, "Demande de crédit créée");
-            statusHistoryRepository.save(initialHistory);
+            initialHistory = statusHistoryRepository.save(initialHistory);
+
+            savedRequest.getHistories().add(initialHistory);
+            creditRequestRepository.update(savedRequest);
+
+            LOGGER.info("Initial history saved successfully: " + initialHistory);
 
             return savedRequest;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to create credit request", e);
             throw new RuntimeException("Failed to create credit request: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<History> getHistoriesForCreditRequest(Long creditRequestId) {
+        return statusHistoryRepository.findByCreditRequestId(creditRequestId);
     }
 
     public CreditRequest getCreditRequestById(Long id) {

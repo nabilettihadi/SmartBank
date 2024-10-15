@@ -1,6 +1,7 @@
 package com.smartbank.web;
 
 import com.smartbank.entities.CreditRequest;
+import com.smartbank.entities.History;
 import com.smartbank.services.CreditRequestService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "CreditRequestDetailsServlet", value = "/creditRequestDetails")
 public class CreditRequestDetailsServlet extends HttpServlet {
@@ -33,7 +35,9 @@ public class CreditRequestDetailsServlet extends HttpServlet {
                 return;
             }
 
+            List<History> histories = creditRequestService.getHistoriesForCreditRequest(id);
             request.setAttribute("creditRequest", creditRequest);
+            request.setAttribute("histories", histories);
             request.getRequestDispatcher("/WEB-INF/views/details.jsp").forward(request, response);
         } catch (NumberFormatException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid credit request ID");

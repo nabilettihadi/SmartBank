@@ -51,23 +51,23 @@
         if (creditRequest != null) {
     %>
     <table>
-        <tr><th>ID</th><td><%= creditRequest.getId() %></td></tr>
-        <tr><th>Profession</th><td><%= creditRequest.getProfession() %></td></tr>
-        <tr><th>Projet</th><td><%= creditRequest.getProject() %></td></tr>
-        <tr><th>Montant</th><td><%= creditRequest.getAmount() %></td></tr>
+        <tr><th>ID</th><td><%= creditRequest.getId() != null ? creditRequest.getId() : "Non défini" %></td></tr>
+        <tr><th>Profession</th><td><%= creditRequest.getProfession() != null ? creditRequest.getProfession() : "Non définie" %></td></tr>
+        <tr><th>Projet</th><td><%= creditRequest.getProject() != null ? creditRequest.getProject() : "Non défini" %></td></tr>
+        <tr><th>Montant</th><td><%= creditRequest.getAmount() != null ? creditRequest.getAmount() : "Non défini" %></td></tr>
         <tr><th>Durée</th><td><%= creditRequest.getDuration() %> mois</td></tr>
-        <tr><th>Paiements mensuels</th><td><%= creditRequest.getMonthlyPayments() %></td></tr>
-        <tr><th>Email</th><td><%= creditRequest.getEmail() %></td></tr>
-        <tr><th>Téléphone</th><td><%= creditRequest.getMobilePhone() %></td></tr>
-        <tr><th>Civilité</th><td><%= creditRequest.getCivilite() %></td></tr>
-        <tr><th>Prénom</th><td><%= creditRequest.getFirstName() %></td></tr>
-        <tr><th>Nom</th><td><%= creditRequest.getLastName() %></td></tr>
-        <tr><th>Numéro CIN</th><td><%= creditRequest.getCinNumber() %></td></tr>
-        <tr><th>Date de naissance</th><td><%= creditRequest.getBirthDate() %></td></tr>
+        <tr><th>Paiements mensuels</th><td><%= creditRequest.getMonthlyPayments() != null ? creditRequest.getMonthlyPayments() : "Non définis" %></td></tr>
+        <tr><th>Email</th><td><%= creditRequest.getEmail() != null ? creditRequest.getEmail() : "Non défini" %></td></tr>
+        <tr><th>Téléphone</th><td><%= creditRequest.getMobilePhone() != null ? creditRequest.getMobilePhone() : "Non défini" %></td></tr>
+        <tr><th>Civilité</th><td><%= creditRequest.getCivilite() != null ? creditRequest.getCivilite() : "Non définie" %></td></tr>
+        <tr><th>Prénom</th><td><%= creditRequest.getFirstName() != null ? creditRequest.getFirstName() : "Non défini" %></td></tr>
+        <tr><th>Nom</th><td><%= creditRequest.getLastName() != null ? creditRequest.getLastName() : "Non défini" %></td></tr>
+        <tr><th>Numéro CIN</th><td><%= creditRequest.getCinNumber() != null ? creditRequest.getCinNumber() : "Non défini" %></td></tr>
+        <tr><th>Date de naissance</th><td><%= creditRequest.getBirthDate() != null ? creditRequest.getBirthDate() : "Non définie" %></td></tr>
         <tr><th>Date d'embauche</th><td><%= creditRequest.getHiringDate() %></td></tr>
         <tr><th>Revenu total</th><td><%= creditRequest.getTotalRevenue() %></td></tr>
         <tr><th>Crédits en cours</th><td><%= creditRequest.isHasOngoingCredits() ? "Oui" : "Non" %></td></tr>
-        <tr><th>Statut actuel</th><td><%= creditRequest.getCurrentStatus().getName() %></td></tr>
+        <tr><th>Statut actuel</th><td><%= creditRequest.getCurrentStatus() != null ? creditRequest.getCurrentStatus().getName() : "PENDING" %></td></tr>
         <tr><th>Date de création</th><td><%= creditRequest.getCreatedAt() %></td></tr>
         <tr><th>Dernière mise à jour</th><td><%= creditRequest.getUpdatedAt() %></td></tr>
     </table>

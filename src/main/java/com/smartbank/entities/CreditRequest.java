@@ -67,10 +67,6 @@ public class CreditRequest {
     @Column(nullable = true)
     private LocalDate updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id", nullable = false)
-    private Status currentStatus;
-
     public void addHistory(History history) {
         if (this.histories == null) {
             this.histories = new ArrayList<>();
@@ -78,8 +74,15 @@ public class CreditRequest {
         this.histories.add(history);
         history.setCreditRequest(this);
     }
+
+    public Status getCurrentStatus() {
+        if (histories.isEmpty()) {
+            return null;
+        }
+        return histories.get(histories.size() - 1).getStatus();
+    }
+
     public void updateStatus(Status newStatus, String description) {
-        this.currentStatus = newStatus;
         this.updatedAt = LocalDate.now();
         History history = new History(this, newStatus, description);
         this.addHistory(history);
@@ -223,17 +226,6 @@ public class CreditRequest {
         this.histories = histories;
     }
 
-
-
-    public Status getCurrentStatus() {
-        return currentStatus;
-    }
-
-    public void setCurrentStatus(Status currentStatus) {
-        this.currentStatus = currentStatus;
-    }
-
-
     public LocalDate getCreatedAt() {
         return createdAt;
     }
@@ -269,6 +261,7 @@ public class CreditRequest {
                 ", hiringDate=" + hiringDate +
                 ", totalRevenue=" + totalRevenue +
                 ", hasOngoingCredits=" + hasOngoingCredits +
+                ", currentStatus=" + getCurrentStatus() +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 '}';

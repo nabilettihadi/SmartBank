@@ -64,7 +64,7 @@
                 <div class="step-content">
                     <div id="step-2" style="display: none">
                         <input type="hidden" name="step" value="step2" />
-                        <label for="email">Email*</label>
+                        <label for="email">Email*</label><br>
                         <input type="email" id="email" name="email" required placeholder="Entrez votre email" />
 
                         <label for="phone">Téléphone mobile*</label>

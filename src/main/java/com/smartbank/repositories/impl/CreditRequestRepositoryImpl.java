@@ -4,16 +4,13 @@ import com.smartbank.entities.CreditRequest;
 import com.smartbank.entities.Status;
 import com.smartbank.repositories.CreditRequestRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -31,8 +28,7 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
             em.persist(creditRequest);
             em.getTransaction().commit();
             return creditRequest;
-
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -75,10 +71,10 @@ public class CreditRequestRepositoryImpl implements CreditRequestRepository {
 
     @Override
     public List<CreditRequest> findFiltered(Status status, LocalDate startDate, LocalDate endDate) {
-        StringBuilder queryString = new StringBuilder("SELECT cr FROM CreditRequest cr WHERE 1=1");
+        StringBuilder queryString = new StringBuilder("SELECT cr FROM CreditRequest cr JOIN cr.histories h WHERE h.id = (SELECT MAX(h2.id) FROM History h2 WHERE h2.creditRequest = cr)");
 
         if (status != null) {
-            queryString.append(" AND cr.currentStatus = :status");
+            queryString.append(" AND h.status = :status");
         }
         if (startDate != null) {
             queryString.append(" AND cr.createdAt >= :startDate");
