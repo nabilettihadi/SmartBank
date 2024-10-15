@@ -67,7 +67,7 @@
         <tr><th>Date d'embauche</th><td><%= creditRequest.getHiringDate() %></td></tr>
         <tr><th>Revenu total</th><td><%= creditRequest.getTotalRevenue() %></td></tr>
         <tr><th>Crédits en cours</th><td><%= creditRequest.isHasOngoingCredits() ? "Oui" : "Non" %></td></tr>
-        <tr><th>Statut actuel</th><td><%= creditRequest.getCurrentStatus() != null ? creditRequest.getCurrentStatus().getName() : "PENDING" %></td></tr>
+        <tr><th>Statut actuel</th><td><%= creditRequest.getCurrentStatus() != null ? creditRequest.getCurrentStatus().getName() : "Non définie" %></td></tr>
         <tr><th>Date de création</th><td><%= creditRequest.getCreatedAt() %></td></tr>
         <tr><th>Dernière mise à jour</th><td><%= creditRequest.getUpdatedAt() %></td></tr>
     </table>
